@@ -16,14 +16,15 @@ function capture(tabId, dimensions) {
             document.body.appendChild(canvas);
             var image = new Image();
             image.onload = function() {
-                canvas.width = dimensions.width;
-                canvas.height = dimensions.height;
+                pixelDensity = window.devicePixelRatio;
+                canvas.width = dimensions.width * pixelDensity;
+                canvas.height = dimensions.height * pixelDensity;
                 var context = canvas.getContext("2d");
                 context.drawImage(image,
-                    dimensions.left, dimensions.top,
-                    dimensions.width, dimensions.height,
+                    dimensions.left * pixelDensity, dimensions.top * pixelDensity,
+                    dimensions.width * pixelDensity, dimensions.height * pixelDensity,
                     0, 0,
-                    dimensions.width, dimensions.height
+                    dimensions.width * pixelDensity, dimensions.height * pixelDensity
                 );
                 var croppedDataUrl = canvas.toDataURL("image/png");
                 chrome.tabs.create({

@@ -3,16 +3,14 @@
   "name": "Test Screenshot Extension",
   "version": "1",
   "manifest_version": 2,
-  "description": "Demonstrate screenshot functionality in the chrome.tabs api.",
+  "description": "takes a screenshot of an element specified by its id",
   "icons":{ "48": "icon48.png"},
   "browser_action": {
-    "default_icon": "icon48.png",
-    "default_title": "Take a screen shot!",
-    "default_page":"popup.html"
+    "default_icon": "icon48.png"
   },
   "background": {
     "persistent": false,
-    "scripts": ["popup.js"]
+    "scripts": ["background.js"]
   },
   "content_scripts": [{
     "js": [ "contentscript.js" ],
