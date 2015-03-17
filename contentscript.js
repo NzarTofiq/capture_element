@@ -1,6 +1,6 @@
-function startCapture(elementId){
-	if(!!document.querySelector('#'+elementId)){
-		return document.querySelector('#'+elementId);
+function startCapture(query){
+	if(document.querySelector(query)){
+		return document.querySelector(query);
 	}else{
 		return 'error: Element does not exist in the context of this document'
 	}
@@ -35,7 +35,7 @@ function dimentions(element){
 chrome.runtime.onMessage.addListener( function(request, sender, sendResponse) {
 	console.log(request);
 	if (request.msg === 'start'){
-		if(document.querySelector('.guide-card')){
+		if(!!document.querySelector('.guide-card')){
 			element = document.querySelector('.guide-card');
 			dimentions = dimentions(element);
 			send(dimentions);
@@ -43,12 +43,13 @@ chrome.runtime.onMessage.addListener( function(request, sender, sendResponse) {
 			form();
 			document.querySelector('#capture_id_button').addEventListener('click', function(e){
 				e.preventDefault();
-				elementId = document.querySelector('#capture_id_text').value;
+				query = document.querySelector('#capture_id_text').value;
 				document.body.removeChild(form);
-				element = startCapture(elementId);
+				element = startCapture(query);
 				dimentions = dimentions(element);
 				send(dimentions);
 			});
 		}
+		
 	}
 });

@@ -24,7 +24,7 @@ function capture(tabId, dimensions) {
                     dimensions.left * pixelDensity, dimensions.top * pixelDensity,
                     dimensions.width * pixelDensity, dimensions.height * pixelDensity,
                     0, 0,
-                    dimensions.width * pixelDensity, dimensions.height * pixelDensity
+                    dimensions.width, dimensions.height
                 );
                 var croppedDataUrl = canvas.toDataURL("image/png");
                 chrome.tabs.create({
