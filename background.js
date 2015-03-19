@@ -16,7 +16,7 @@ function capture(tabId, dimensions) {
             document.body.appendChild(canvas);
             var image = new Image();
             image.onload = function() {
-                pixelDensity = window.devicePixelRatio;
+                pixelDensity = dimensions.pixelDensity;
                 canvas.width = dimensions.width * pixelDensity;
                 canvas.height = dimensions.height * pixelDensity;
                 var context = canvas.getContext("2d");
@@ -24,13 +24,10 @@ function capture(tabId, dimensions) {
                     dimensions.left * pixelDensity, dimensions.top * pixelDensity,
                     dimensions.width * pixelDensity, dimensions.height * pixelDensity,
                     0, 0,
-                    dimensions.width, dimensions.height
+                    dimensions.width * pixelDensity, dimensions.height * pixelDensity
                 );
                 var croppedDataUrl = canvas.toDataURL("image/png");
-                chrome.tabs.create({
-                    url: croppedDataUrl,
-                    windowId: tab.windowId
-                });
+                chrome.tabs.sendMessage(tab.id, {msg: "imageUrl", url: canvas.toDataURL("image/png")});
             }
             image.src = dataUrl;
         });

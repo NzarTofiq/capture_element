@@ -27,9 +27,12 @@ function form(){
 function dimentions(element){
 	var top = element.offsetTop;
 	var left = element.offsetLeft;
+	window.scrollTo(left, top);
 	var height = element.offsetHeight;
 	var width = element.offsetWidth;
-	return {'top': top, 'left': left, 'height': height, 'width': width};
+	var pixelDensity = window.devicePixelRatio;
+	return {'top': top, 'left': left, 'height': height, 'width': width, 'pixelDensity': pixelDensity};
+
 }
 
 chrome.runtime.onMessage.addListener( function(request, sender, sendResponse) {
@@ -45,11 +48,21 @@ chrome.runtime.onMessage.addListener( function(request, sender, sendResponse) {
 				e.preventDefault();
 				query = document.querySelector('#capture_id_text').value;
 				document.body.removeChild(form);
-				element = startCapture(query);
-				dimentions = dimentions(element);
-				send(dimentions);
+				window.setTimeout(function(){
+					element = startCapture(query);
+					dimentions = dimentions(element);
+					send(dimentions);
+				}, 150);
 			});
 		}
 		
+	} else if (request.msg === 'imageUrl') {
+		var downloadLink = document.createElement('a');
+		downloadLink.innerHTML = 'Click here';
+		downloadLink.download = 'screenshot.png';
+		downloadLink.href = request.url;
+		document.body.appendChild(downloadLink);
+		downloadLink.click();
+		document.body.removeChild(downloadLink);
 	}
 });
