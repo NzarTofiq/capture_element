@@ -24,19 +24,35 @@ function form(){
 	return form;
 }
 
-function dimentions(element){
-	var top = element.offsetTop;
-	var left = element.offsetLeft;
-	window.scrollTo(left, top);
+function setDimentions(element, x, y, originalX, originalY){
+	var top = y;
+	var left = x;
 	var height = element.offsetHeight;
 	var width = element.offsetWidth;
 	var pixelDensity = window.devicePixelRatio;
-	return {'top': top, 'left': left, 'height': height, 'width': width, 'pixelDensity': pixelDensity};
+	dimensions = {'top': top, 'left': left, 'height': height, 'width': width, 'pixelDensity': pixelDensity};
+	window.scrollTo(originalX,originalY);
+	return dimensions;
+}
+
+function dimentions(element){
+	originalX = window.scrollX;
+	originalY = window.scrollY;
+	if(element.offsetHeight > window.innerHeight){
+		y = element.scrollTop;
+		x = element.scrollLeft;
+		send({'needsScrolling' : true})
+		window.scrollTo(0, element.offsetTop);
+		dimensions = setDimentions(element, x, y, originalX, originalY);
+		return dimensions;
+	}else{
+		window.scrollTo(0, element.offsetTop)
+		return setDimentions(element);
+	}
 
 }
 
 chrome.runtime.onMessage.addListener( function(request, sender, sendResponse) {
-	console.log(request);
 	if (request.msg === 'start'){
 		if(!!document.querySelector('.guide-card')){
 			element = document.querySelector('.guide-card');
@@ -52,7 +68,7 @@ chrome.runtime.onMessage.addListener( function(request, sender, sendResponse) {
 					element = startCapture(query);
 					dimentions = dimentions(element);
 					send(dimentions);
-				}, 150);
+				}, 200);
 			});
 		}
 		

@@ -1,13 +1,19 @@
+var canvases = [];
 chrome.browserAction.onClicked.addListener(function(tab){
 	chrome.tabs.sendMessage(tab.id, {msg: "start"}, function(response) {
-		console.log(response.elem);
 	});
 });
 
-chrome.runtime.onMessage.addListener(function(request, sender) {
-	tabId = sender.tab.id;
-	capture(tabId, request);
-});
+function onMessage(request, sender) {
+    tabId = sender.tab.id;
+    if(request.needsScrolling  === true){
+        console.log(request);
+    }else{
+        capture(tabId, request);
+    }
+}
+
+chrome.runtime.onMessage.addListener(onMessage);
 
 function capture(tabId, dimensions) {
     chrome.tabs.get(tabId, function(tab) {
@@ -32,4 +38,13 @@ function capture(tabId, dimensions) {
             image.src = dataUrl;
         });
     });
+}
+
+function tieCanvases(canvases){
+    canv = document.createElement('canvas');
+    context = canv.getContext('2d');
+    for (var i=0; i<canvases.length; i++){
+        var can3 = document.getElementById('canvas3');
+        context.drawImage(can, 0, canv.height);
+    }
 }
