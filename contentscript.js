@@ -6,18 +6,15 @@ function send(request) {
     chrome.runtime.sendMessage(request, function(response) {});
 }
 
-function setDimensions(element){
-	try{
-		pixelDensity = window.devicePixelRatio;
-		var top = element.offsetTop * pixelDensity;
-		var left = element.offsetLeft * pixelDensity;
-		var height = element.clientHeight * pixelDensity;
-		var width = element.clientWidth * pixelDensity;
-		dimensions = {'left': left, 'top': top, 'height': height, 'width': width};
-		return dimensions;
-	} catch(e){
-		throw new e('does not exist');
-	}
+getDimensions = function (element) {
+	dimensions = {};
+	boundingBox = element.getBoundingClientRect();
+	dimensions.width = boundingBox.width;
+	dimensions.height = boundingBox.height;
+	dimensions.left = boundingBox.left;
+	dimensions.top = boundingBox.top;
+	dimensions.bottom = boundingBox.bottom;
+	return dimensions;
 }
 
 chrome.runtime.onMessage.addListener( function(request, sender, sendResponse) {
@@ -36,14 +33,14 @@ chrome.runtime.onMessage.addListener( function(request, sender, sendResponse) {
 	}();
 
 	if (request.msg === 'start'){
-		document.querySelector('#capture_id_button').addEventListener('click', function(e){
+		document.getElementById('capture_id_button').addEventListener('click', function(e){
 			e.preventDefault();
-			query = document.querySelector('#capture_id_text').value;
+			query = document.getElementById('capture_id_text').value;
 			document.body.removeChild(form);
 			window.setTimeout(function(){
 				element = startCapture(query);
-				dimentions = setDimensions(element);
-				send(dimentions);
+				dimensions = element.getBoundingClientRect();
+				send(getDimensions(element));
 			}, 200); //wait for the form to disappear
 		});
 		
